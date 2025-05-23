@@ -2,191 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Event Ticketing NFT</title>
+  <link rel="stylesheet" href="Ticket.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #ece9e6, #ffffff);
-    }
-
-    .center {
-      text-align: center;
-      padding-top: 100px;
-      background: linear-gradient(to right, #0e1f6f, #182f95, #2e46b0, #5870dd, #8396e9);
-      background-size: cover;
-      height: 100vh;
-      color: white;
-    }
-
-    .btn {
-      padding: 14px 24px;
-      font-size: 16px;
-      background: linear-gradient(to right, #667eea, #764ba2);
-      color: white;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-      transition: 0.3s;
-    }
-
-    .btn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(to right, #6a11cb, #2575fc);
-    }
-
-    #event-section {
-      display: none;
-      padding: 40px;
-      max-width: 1200px;
-      margin: auto;
-    }
-
-    #account {
-      font-weight: bold;
-      margin-bottom: 20px;
-      color: #444;
-    }
-
-    .event-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    .event {
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      overflow: hidden;
-      width: 300px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      cursor: pointer;
-    }
-
-    .event:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-
-    .event img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    .event:hover img {
-      transform: scale(1.05);
-    }
-
-    .event-details {
-      padding: 20px;
-    }
-
-    .event h3 {
-      font-size: 20px;
-      color: #333;
-      margin-bottom: 10px;
-    }
-
-    .event p {
-      font-size: 14px;
-      color: #666;
-      margin: 4px 0;
-    }
-
-    .event button {
-      margin-top: 10px;
-      padding: 10px;
-      background: #38b2ac;
-      color: white;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    .event button:hover {
-      background: #319795;
-      transform: scale(1.05);
-    }
-
-    input[type="text"] {
-      padding: 10px;
-      width: 300px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
-      margin-top: 15px;
-    }
-
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.7);
-    }
-
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border-radius: 15px;
-      width: 80%;
-      max-width: 600px;
-      position: relative;
-    }
-
-    .close {
-      color: #aaa;
-      position: absolute;
-      top: 10px; right: 20px;
-      font-size: 28px;
-      cursor: pointer;
-    }
-
-    .close:hover {
-      color: #000;
-    }
-
-    @media (max-width: 768px) {
-      .event { width: 100%; }
-    }
-  </style>
 </head>
 <body>
 
   <!-- Login Section -->
   <div id="login-section" class="center">
-    <h1>🎟️ Event Ticketing NFT</h1>
-    <p>Connect your wallet to explore and buy NFT tickets!</p>
-    <button class="btn" onclick="connectWallet()">Connect MetaMask</button>
+    <h1 class="fade-in-top">🎟️ Event Ticketing NFT</h1>
+    <p class="fade-in-top" style="animation-delay: 0.2s;">Connect your wallet to explore and buy NFT tickets!</p>
+    <button class="btn fade-in-top" style="animation-delay: 0.4s;" onclick="connectWallet()">Connect MetaMask</button>
   </div>
 
   <!-- Event Section -->
-  <div id="event-section">
+  <div id="event-section" style="display: none;">
     <div id="account"></div>
 
-    <div style="text-align:center; margin-bottom: 30px;">
-      <h2>🎉 Available Events</h2>
+    <div class="section-header">
+      <h2 class="glow-text">🎉 Available Events</h2>
       <input type="text" id="searchInput" placeholder="Search events..." onkeyup="filterEvents()">
     </div>
 
     <div class="event-list" id="event-list"></div>
   </div>
 
-  <!-- Modal Detail -->
+   <!-- Modal Detail -->
   <div id="eventModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content scale-in-center">
       <span class="close" onclick="closeModal()">&times;</span>
       <div id="modalContent"></div>
     </div>
@@ -195,7 +40,7 @@
   <script>
     let web3;
     let contract;
-    const contractAddress = "0x70607b5CAb0E6D23d14ee942982d9Ed1190977f2"; // Replace with your contract address
+    const contractAddress = "0x70607b5CAb0E6D23d14ee942982d9Ed1190977f2";
     const contractABI = [
 	{
 		"inputs": [
@@ -898,7 +743,7 @@
       for (let i = 0; i < count; i++) {
         const ev = await contract.methods.events(i).call();
         const card = document.createElement("div");
-        card.className = "event";
+        card.className = "event fade-in";
         card.setAttribute("onclick", `showEventDetail(${i})`);
         card.innerHTML = `
           <img src="https://source.unsplash.com/400x300/?concert,event,${i}" />
