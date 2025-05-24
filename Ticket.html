@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Event Ticketing NFT</title>
+  <title>Event Ticketing</title>
   <link rel="stylesheet" href="Ticket.css" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
@@ -12,7 +12,7 @@
 
   <!-- Login Section -->
   <div id="login-section" class="center">
-    <h1 class="fade-in-top">🎟️ Event Ticketing NFT</h1>
+    <h1 class="fade-in-top">🎫 Event Ticketing</h1>
     <p class="fade-in-top" style="animation-delay: 0.2s;">Connect your wallet to explore and buy NFT tickets!</p>
     <button class="btn fade-in-top" style="animation-delay: 0.4s;" onclick="connectWallet()">Connect MetaMask</button>
   </div>
@@ -21,15 +21,21 @@
   <div id="event-section" style="display: none;">
     <div id="account"></div>
 
+    <!-- Profile Box -->
+    <div class="profile-box" style="display: none;" onclick="showMyTickets()">
+      <img src="profile.png" alt="Profile Picture" class="profile-pic" />
+      <div class="profile-name" id="user-name">Nama User</div>
+    </div>
+
     <div class="section-header">
-      <h2 class="glow-text">🎉 Available Events</h2>
+      <h2 class="glow-text">Available Events</h2>
       <input type="text" id="searchInput" placeholder="Search events..." onkeyup="filterEvents()">
     </div>
 
     <div class="event-list" id="event-list"></div>
   </div>
 
-   <!-- Modal Detail -->
+  <!-- Modal Detail -->
   <div id="eventModal" class="modal">
     <div class="modal-content scale-in-center">
       <span class="close" onclick="closeModal()">&times;</span>
@@ -37,10 +43,24 @@
     </div>
   </div>
 
+  <!-- Modal My Tickets -->
+  <div id="myTicketsModal" class="modal">
+    <div class="modal-content scale-in-center">
+      <span class="close" onclick="closeMyTickets()">&times;</span>
+      <h2>🎟 My Tickets</h2>
+      <div id="myTicketsContent"></div>
+    </div>
+  </div>
+
+  <footer style="text-align: center; margin-top: 40px; margin-bottom: 10px; padding: 20px; font-size: 14px;">
+    &copy; Final Project Blockchain - M. Fatieh Akram Faritshi
+  </footer>
+
   <script>
     let web3;
     let contract;
-    const contractAddress = "0x70607b5CAb0E6D23d14ee942982d9Ed1190977f2";
+    let currentAccount;
+    const contractAddress = "0x26FaD591dE01106369d36Ba1b0db2FE446e4a043";
     const contractABI = [
 	{
 		"inputs": [
@@ -107,6 +127,19 @@
 			}
 		],
 		"name": "createEvent",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "eventId",
+				"type": "uint256"
+			}
+		],
+		"name": "deactivateEvent",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -561,6 +594,11 @@
 				"internalType": "uint256",
 				"name": "sold",
 				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "isActive",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -725,7 +763,13 @@
         web3 = new Web3(window.ethereum);
         await ethereum.request({ method: 'eth_requestAccounts' });
         const accounts = await web3.eth.getAccounts();
-        document.getElementById("account").innerText = `🔗 Connected: ${accounts[0]}`;
+        currentAccount = accounts[0];
+
+        const username = prompt("Masukkan nama Anda:") || "Pengguna";
+        document.getElementById("account").innerText = `🔗 Connected: ${currentAccount}`;
+        document.getElementById("user-name").textContent = username;
+        document.querySelector(".profile-box").style.display = "block";
+
         contract = new web3.eth.Contract(contractABI, contractAddress);
         document.getElementById("login-section").style.display = "none";
         document.getElementById("event-section").style.display = "block";
@@ -786,12 +830,41 @@
     }
 
     async function buyTicket(eventId, priceWei) {
-      const accounts = await web3.eth.getAccounts();
       await contract.methods.buyTicket(eventId).send({
-        from: accounts[0],
+        from: currentAccount,
         value: priceWei
       });
       alert("🎫 Ticket purchased! Check your wallet.");
+    }
+
+    async function showMyTickets() {
+      const totalSupply = await contract.methods.ticketId().call();
+      const myTicketsContent = document.getElementById("myTicketsContent");
+      myTicketsContent.innerHTML = "";
+
+      for (let i = 0; i < totalSupply; i++) {
+        const owner = await contract.methods.ownerOf(i).call();
+        if (owner.toLowerCase() === currentAccount.toLowerCase()) {
+          const uri = await contract.methods.tokenURI(i).call();
+          const metadata = await fetch(uri).then(res => res.json());
+          const ticket = document.createElement("div");
+          ticket.className = "event fade-in";
+          ticket.innerHTML = `
+            <img src="${metadata.image || 'https://source.unsplash.com/400x300/?ticket'}" />
+            <div class="event-details">
+              <h3>${metadata.name || 'Ticket #' + i}</h3>
+              <p>${metadata.description || 'No description'}</p>
+            </div>
+          `;
+          myTicketsContent.appendChild(ticket);
+        }
+      }
+
+      document.getElementById("myTicketsModal").style.display = "block";
+    }
+
+    function closeMyTickets() {
+      document.getElementById("myTicketsModal").style.display = "none";
     }
   </script>
 </body>
