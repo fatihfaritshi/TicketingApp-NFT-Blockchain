@@ -69,7 +69,7 @@
     let web3;
     let contract;
     let currentAccount;
-    const contractAddress = "0x26FaD591dE01106369d36Ba1b0db2FE446e4a043";
+    const contractAddress = "0x807574D7bC55f0c767e49BD092CC30ac331F9DaE";
     const contractABI = [
 	{
 		"inputs": [
@@ -767,7 +767,15 @@
 	}
 ]
 
-    async function connectWallet() {
+    function formatIPFS(url) {
+  if (!url) return '';
+  if (url.startsWith('ipfs://')) {
+    return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+  }
+  return url;
+}
+
+async function connectWallet() {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
     await ethereum.request({ method: 'eth_requestAccounts' });
@@ -795,94 +803,131 @@ function submitName() {
   loadEvents();
 }
 
+async function loadEvents() {
+  const count = await contract.methods.eventCount().call();
+  const list = document.getElementById("event-list");
+  list.innerHTML = "";
 
-    async function loadEvents() {
-      const count = await contract.methods.eventCount().call();
-      const list = document.getElementById("event-list");
-      list.innerHTML = "";
-
-      for (let i = 0; i < count; i++) {
-        const ev = await contract.methods.events(i).call();
-        const card = document.createElement("div");
-        card.className = "event fade-in";
-        card.setAttribute("onclick", `showEventDetail(${i})`);
-        card.innerHTML = `
-          <img src="https://source.unsplash.com/400x300/?concert,event,${i}" />
-          <div class="event-details">
-            <h3>${ev.name}</h3>
-            <p><strong>Date:</strong> ${ev.date}</p>
-            <p><strong>Location:</strong> ${ev.location}</p>
-            <p><strong>Price:</strong> ${web3.utils.fromWei(ev.price, 'ether')} ETH</p>
-            <button onclick="event.stopPropagation(); buyTicket(${i}, '${ev.price}')">Buy Ticket</button>
-          </div>
-        `;
-        list.appendChild(card);
-      }
-    }
-
-    function filterEvents() {
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const cards = document.getElementsByClassName("event");
-      for (let card of cards) {
-        const name = card.querySelector("h3").innerText.toLowerCase();
-        card.style.display = name.includes(input) ? "flex" : "none";
-      }
-    }
-
-    async function showEventDetail(index) {
-      const ev = await contract.methods.events(index).call();
-      document.getElementById("modalContent").innerHTML = `
-        <h2>${ev.name}</h2>
+  for (let i = 0; i < count; i++) {
+    const ev = await contract.methods.events(i).call();
+    const card = document.createElement("div");
+    card.className = "event fade-in";
+    card.setAttribute("onclick", `showEventDetail(${i})`);
+    card.innerHTML = `
+      <img src="https://source.unsplash.com/400x300/?concert,event,${i}" />
+      <div class="event-details">
+        <h3>${ev.name}</h3>
         <p><strong>Date:</strong> ${ev.date}</p>
         <p><strong>Location:</strong> ${ev.location}</p>
-        <p><strong>Description:</strong> ${ev.description || 'No description available.'}</p>
         <p><strong>Price:</strong> ${web3.utils.fromWei(ev.price, 'ether')} ETH</p>
-        <button onclick="buyTicket(${index}, '${ev.price}')">Buy Now</button>
+        <button onclick="event.stopPropagation(); buyTicket(${i}, '${ev.price}')">Buy Ticket</button>
+      </div>
+    `;
+    list.appendChild(card);
+  }
+}
+
+function filterEvents() {
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const cards = document.getElementsByClassName("event");
+  for (let card of cards) {
+    const name = card.querySelector("h3").innerText.toLowerCase();
+    card.style.display = name.includes(input) ? "flex" : "none";
+  }
+}
+
+async function showEventDetail(index) {
+  try {
+    const ev = await contract.methods.events(index).call();
+
+    let tokenURI = await contract.methods.tokenURI(index).call();
+    tokenURI = formatIPFS(tokenURI);
+    console.log("Token URI (converted):", tokenURI);
+
+    const response = await fetch(tokenURI);
+    if (!response.ok) throw new Error("Metadata fetch failed");
+
+    const metadata = await response.json();
+    console.log("Fetched Metadata:", metadata);
+
+    const imageUrl = formatIPFS(metadata.image);
+    console.log("Image URL (converted):", imageUrl);
+
+    document.getElementById("modalContent").innerHTML = `
+      <img src="${imageUrl}" alt="Event Image" style="width: 100%; height: auto; margin-bottom: 10px;" />
+      <h2>${ev.name}</h2>
+      <p><strong>Date:</strong> ${ev.date}</p>
+      <p><strong>Location:</strong> ${ev.location}</p>
+      <p><strong>Description:</strong> ${ev.description || metadata.description || 'No description available.'}</p>
+      <p><strong>Price:</strong> ${web3.utils.fromWei(ev.price, 'ether')} ETH</p>
+      <button onclick="buyTicket(${index}, '${ev.price}')">Buy Now</button>
+    `;
+
+    document.getElementById("eventModal").style.display = "block";
+  } catch (error) {
+    console.error("Error loading event detail:", error);
+    alert("Failed to load event details.");
+  }
+}
+
+
+function closeModal() {
+  document.getElementById("eventModal").style.display = "none";
+}
+
+async function buyTicket(eventId, priceWei) {
+  await contract.methods.buyTicket(eventId).send({
+    from: currentAccount,
+    value: priceWei
+  });
+  alert("🎫 Ticket purchased! Check your wallet.");
+}
+
+async function showMyTickets() {
+  const totalSupply = await contract.methods.ticketId().call();
+  const myTicketsContent = document.getElementById("myTicketsContent");
+  myTicketsContent.innerHTML = "";
+
+  for (let i = 0; i < totalSupply; i++) {
+    try {
+      const owner = await contract.methods.ownerOf(i).call();
+      if (owner.toLowerCase() !== currentAccount.toLowerCase()) continue;
+
+      let tokenURI = await contract.methods.tokenURI(i).call();
+      tokenURI = formatIPFS(tokenURI);
+      console.log("Token URI (converted):", tokenURI);
+
+      const response = await fetch(tokenURI);
+      if (!response.ok) throw new Error("Metadata fetch failed");
+
+      const metadata = await response.json();
+      console.log("Fetched Metadata:", metadata);
+
+      const imageUrl = formatIPFS(metadata.image);
+      console.log("Image URL (converted):", imageUrl);
+
+      const ticket = document.createElement("div");
+      ticket.className = "event fade-in";
+      ticket.innerHTML = `
+        <img src="${imageUrl}" alt="Event Ticket" style="width: 100%; height: auto;" />
+        <div class="event-details">
+          <h3>${metadata.name || 'Ticket #' + i}</h3>
+          <p>${metadata.description || 'No description'}</p>
+        </div>
       `;
-      document.getElementById("eventModal").style.display = "block";
+      myTicketsContent.appendChild(ticket);
+
+    } catch (error) {
+      console.error("Error loading ticket #" + i + ":", error);
     }
+  }
 
-    function closeModal() {
-      document.getElementById("eventModal").style.display = "none";
-    }
+  document.getElementById("myTicketsModal").style.display = "block";
+}
 
-    async function buyTicket(eventId, priceWei) {
-      await contract.methods.buyTicket(eventId).send({
-        from: currentAccount,
-        value: priceWei
-      });
-      alert("🎫 Ticket purchased! Check your wallet.");
-    }
-
-    async function showMyTickets() {
-      const totalSupply = await contract.methods.ticketId().call();
-      const myTicketsContent = document.getElementById("myTicketsContent");
-      myTicketsContent.innerHTML = "";
-
-      for (let i = 0; i < totalSupply; i++) {
-        const owner = await contract.methods.ownerOf(i).call();
-        if (owner.toLowerCase() === currentAccount.toLowerCase()) {
-          const uri = await contract.methods.tokenURI(i).call();
-          const metadata = await fetch(uri).then(res => res.json());
-          const ticket = document.createElement("div");
-          ticket.className = "event fade-in";
-          ticket.innerHTML = `
-            <img src="${metadata.image || 'https://source.unsplash.com/400x300/?ticket'}" />
-            <div class="event-details">
-              <h3>${metadata.name || 'Ticket #' + i}</h3>
-              <p>${metadata.description || 'No description'}</p>
-            </div>
-          `;
-          myTicketsContent.appendChild(ticket);
-        }
-      }
-
-      document.getElementById("myTicketsModal").style.display = "block";
-    }
-
-    function closeMyTickets() {
-      document.getElementById("myTicketsModal").style.display = "none";
-    }
-  </script>
+function closeMyTickets() {
+  document.getElementById("myTicketsModal").style.display = "none";
+}
+</script>
 </body>
 </html>

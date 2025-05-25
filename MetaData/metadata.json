@@ -1,7 +1,7 @@
 {
   "name": "The Eras Tour",
   "description": "Konser The Eras Tour di Jakarta Convention Center pada 21 Juli 2025.",
-  "image": "https://i.pinimg.com/736x/13/63/a7/1363a760151e04e8abc33cbc610f25df.jpg", 
+  "image": "https://i.pinimg.com/736x/fb/e9/19/fbe91944877dbb890f7b7194c5070b03.jpg", 
   "attributes": [
     {
       "trait_type": "Date",
@@ -13,3 +13,4 @@
     }
   ]
 }
+
