@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Event Ticketing</title>
-  <link rel="stylesheet" href="Ticket.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<title>Event Ticketing</title>
+	<link rel="stylesheet" href="Ticket.css" />
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
 </head>
 <body>
+	
+	<!-- Login Section -->
+	<div id="login-section" class="center">
+		<h1 class="fade-in-top">🎫 Event Ticketing</h1>
+		<p class="fade-in-top" style="animation-delay: 0.2s;">Connect your wallet to explore and buy NFT tickets!</p>
+		<button class="btn fade-in-top" style="animation-delay: 0.4s;" onclick="connectWallet()">Connect MetaMask</button>
+	</div>
 
-  <!-- Login Section -->
-  <div id="login-section" class="center">
-    <h1 class="fade-in-top">🎫 Event Ticketing</h1>
-    <p class="fade-in-top" style="animation-delay: 0.2s;">Connect your wallet to explore and buy NFT tickets!</p>
-    <button class="btn fade-in-top" style="animation-delay: 0.4s;" onclick="connectWallet()">Connect MetaMask</button>
+	<!-- Modal Input Nama -->
+<div id="nameModal" class="modal">
+  <div class="modal-content scale-in-center">
+    <h2>Enter Your Name</h2>
+    <input type="text" id="inputName" placeholder="Example: Fatih Faritshi" />
+    <button class="btn" onclick="submitName()">Next</button>
   </div>
+</div>
 
   <!-- Event Section -->
   <div id="event-section" style="display: none;">
@@ -758,26 +767,34 @@
 	}
 ]
 
-     async function connectWallet() {
-      if (window.ethereum) {
-        web3 = new Web3(window.ethereum);
-        await ethereum.request({ method: 'eth_requestAccounts' });
-        const accounts = await web3.eth.getAccounts();
-        currentAccount = accounts[0];
+    async function connectWallet() {
+  if (window.ethereum) {
+    web3 = new Web3(window.ethereum);
+    await ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await web3.eth.getAccounts();
+    currentAccount = accounts[0];
 
-        const username = prompt("Masukkan nama Anda:") || "Pengguna";
-        document.getElementById("account").innerText = `🔗 Connected: ${currentAccount}`;
-        document.getElementById("user-name").textContent = username;
-        document.querySelector(".profile-box").style.display = "block";
+    document.getElementById("nameModal").style.display = "block"; 
+  } else {
+    alert("Please install MetaMask to use this app.");
+  }
+}
 
-        contract = new web3.eth.Contract(contractABI, contractAddress);
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("event-section").style.display = "block";
-        loadEvents();
-      } else {
-        alert("Please install MetaMask to use this app.");
-      }
-    }
+function submitName() {
+  const username = document.getElementById("inputName").value.trim() || "Pengguna";
+
+  document.getElementById("account").innerText = `🔗 Connected: ${currentAccount}`;
+  document.getElementById("user-name").textContent = username;
+  document.querySelector(".profile-box").style.display = "block";
+
+  contract = new web3.eth.Contract(contractABI, contractAddress);
+  document.getElementById("login-section").style.display = "none";
+  document.getElementById("event-section").style.display = "block";
+  document.getElementById("nameModal").style.display = "none"; 
+
+  loadEvents();
+}
+
 
     async function loadEvents() {
       const count = await contract.methods.eventCount().call();

@@ -18,7 +18,7 @@ body {
   text-align: center;
   height: 100vh;
   animation: fadeIn 1s ease forwards;
-  background: linear-gradient(-45deg, #041966, #051736, #0c1e5c);
+  background: linear-gradient(-45deg, #00003E, #000024, #07075c);
   background-size: 400% 400%;
   animation: gradientBG 12s ease infinite;
   color: #fff;
@@ -34,7 +34,7 @@ body {
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 1px;
-  background: linear-gradient(to right, #063bb6, #3459b8);
+  background: linear-gradient(to right, #0637ab, #3a5eb9);
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -48,8 +48,17 @@ body {
 
 .btn:hover {
   transform: scale(1.08);
-  background: linear-gradient(to right, #9e9709, #edd732);
+  background: linear-gradient(to right, #e5ad06, #88650b);
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+#nameModal input {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #050b2e;
+  border-radius: 8px;
+  font-size: 16px;
 }
 
 #event-section {
@@ -57,7 +66,7 @@ body {
   padding: 60px 20px;
   max-width: 1600px;
   animation: fadeIn 1s ease forwards;
-  background: linear-gradient(-45deg, #587de3, #1a2d79, #13327a, #4264f0);
+  background: linear-gradient(-45deg, #5d84f0, #172972, #13266c, #3a5ff3);
   background-size: 400% 400%;
   animation: gradientBG 12s ease infinite;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
@@ -96,8 +105,8 @@ body {
 }
 
 .profile-pic {
-  width: 55px;
-  height: 55px;
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   border: 2px solid #fff;
   object-fit: cover;
@@ -140,9 +149,9 @@ body {
 }
 
 .event {
-  background: rgba(20, 20, 40, 0.95);
+  background: linear-gradient( #090938, #020222);
   border-radius: 22px;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.837);
   overflow: hidden;
   width: 300px;
   display: flex;
@@ -187,7 +196,7 @@ body {
 .event button {
   margin-top: 12px;
   padding: 10px 20px;
-  background: #2842c2;
+  background: linear-gradient(to right, #0637ab, #3a5eb9);
   color: white;
   border: none;
   border-radius: 25px;
@@ -197,7 +206,7 @@ body {
 }
 
 .event button:hover {
-  background: #d2ad07;
+  background: linear-gradient(to right, #e5ad06, #88650b);
   transform: scale(1.06);
 }
 
@@ -212,10 +221,10 @@ body {
 }
 
 .modal-content {
-  background-color: #fff;
+  background: linear-gradient(to right, #ffffff, #d6d6d6);
   margin: 10% auto;
   padding: 30px;
-  border-radius: 20px;
+  border-radius: 30px;
   width: 80%;
   max-width: 600px;
   position: relative;
