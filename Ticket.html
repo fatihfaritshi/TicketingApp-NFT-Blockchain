@@ -41,7 +41,8 @@
       <input type="text" id="searchInput" placeholder="Search events..." onkeyup="filterEvents()">
     </div>
 
-    <div class="event-list" id="event-list"></div>
+    <div class="event-list" id="event-list">
+	</div>
   </div>
 
   <!-- Modal Detail -->
@@ -767,7 +768,7 @@
 	}
 ]
 
-    function formatIPFS(url) {
+function formatIPFS(url) {
   if (!url) return '';
   if (url.startsWith('ipfs://')) {
     return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
@@ -809,23 +810,44 @@ async function loadEvents() {
   list.innerHTML = "";
 
   for (let i = 0; i < count; i++) {
-    const ev = await contract.methods.events(i).call();
-    const card = document.createElement("div");
-    card.className = "event fade-in";
-    card.setAttribute("onclick", `showEventDetail(${i})`);
-    card.innerHTML = `
-      <img src="https://source.unsplash.com/400x300/?concert,event,${i}" />
-      <div class="event-details">
-        <h3>${ev.name}</h3>
-        <p><strong>Date:</strong> ${ev.date}</p>
-        <p><strong>Location:</strong> ${ev.location}</p>
-        <p><strong>Price:</strong> ${web3.utils.fromWei(ev.price, 'ether')} ETH</p>
-        <button onclick="event.stopPropagation(); buyTicket(${i}, '${ev.price}')">Buy Ticket</button>
-      </div>
-    `;
-    list.appendChild(card);
+    try {
+      const ev = await contract.methods.events(i).call();
+
+      let imageUrl = "https://via.placeholder.com/400x300?text=No+Image";
+      try {
+        let tokenURI = await contract.methods.tokenURI(i).call();
+        tokenURI = formatIPFS(tokenURI);
+        const response = await fetch(tokenURI);
+        if (response.ok) {
+          const metadata = await response.json();
+          if (metadata.image) {
+            imageUrl = formatIPFS(metadata.image);
+          }
+        }
+      } catch (err) {
+        console.warn(`Token URI untuk event ke-${i} belum tersedia.`);
+      }
+
+      const card = document.createElement("div");
+      card.className = "event fade-in";
+      card.setAttribute("onclick", `showEventDetail(${i})`);
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="Event Image" style="width: 100%; height: auto;" />
+        <div class="event-details">
+          <h3>${ev.name}</h3>
+          <p><strong>Date:</strong> ${ev.date}</p>
+          <p><strong>Location:</strong> ${ev.location}</p>
+          <p><strong>Price:</strong> ${web3.utils.fromWei(ev.price, 'ether')} ETH</p>
+          <button onclick="event.stopPropagation(); buyTicket(${i}, '${ev.price}')">Buy Ticket</button>
+        </div>
+      `;
+      list.appendChild(card);
+    } catch (error) {
+      console.error(`Gagal memuat event ke-${i}:`, error);
+    }
   }
 }
+
 
 function filterEvents() {
   const input = document.getElementById("searchInput").value.toLowerCase();
@@ -840,25 +862,32 @@ async function showEventDetail(index) {
   try {
     const ev = await contract.methods.events(index).call();
 
-    let tokenURI = await contract.methods.tokenURI(index).call();
-    tokenURI = formatIPFS(tokenURI);
-    console.log("Token URI (converted):", tokenURI);
+    let imageUrl = "https://via.placeholder.com/400x300?text=No+Image";
+    let description = ev.description || "No description available.";
 
-    const response = await fetch(tokenURI);
-    if (!response.ok) throw new Error("Metadata fetch failed");
+    try {
+      let tokenURI = await contract.methods.tokenURI(index).call();
+      tokenURI = formatIPFS(tokenURI);
+      console.log("Token URI (converted):", tokenURI);
 
-    const metadata = await response.json();
-    console.log("Fetched Metadata:", metadata);
+      const response = await fetch(tokenURI);
+      if (!response.ok) throw new Error("Metadata fetch failed");
 
-    const imageUrl = formatIPFS(metadata.image);
-    console.log("Image URL (converted):", imageUrl);
+      const metadata = await response.json();
+      console.log("Fetched Metadata:", metadata);
+
+      if (metadata.image) imageUrl = formatIPFS(metadata.image);
+      if (metadata.description) description = metadata.description;
+    } catch (err) {
+      console.warn(`Token URI belum tersedia untuk event ke-${index}:`, err.message);
+    }
 
     document.getElementById("modalContent").innerHTML = `
-      <img src="${imageUrl}" alt="Event Image" style="width: 100%; height: auto; margin-bottom: 10px;" />
+      <img src="${imageUrl}" alt="Event Image" style="width: 50%; height: auto; margin-bottom: 10px;" />
       <h2>${ev.name}</h2>
       <p><strong>Date:</strong> ${ev.date}</p>
       <p><strong>Location:</strong> ${ev.location}</p>
-      <p><strong>Description:</strong> ${ev.description || metadata.description || 'No description available.'}</p>
+      <p><strong>Description:</strong> ${description}</p>
       <p><strong>Price:</strong> ${web3.utils.fromWei(ev.price, 'ether')} ETH</p>
       <button onclick="buyTicket(${index}, '${ev.price}')">Buy Now</button>
     `;

@@ -1,0 +1,15 @@
+{
+  "name": "Little Mix LM5: Tour",
+  "description": "Konser LM5 di London The O2 pada 9 Juli 2025.",
+  "image": "https://i.pinimg.com/736x/6e/df/57/6edf5743f2e0d8019be4fb9de1f726b6.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-07-09"
+    },
+    {
+      "trait_type": "Location",
+      "value": "London The O2"
+    }
+  ]
+}

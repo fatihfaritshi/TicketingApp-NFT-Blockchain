@@ -1,19 +1,15 @@
 {
-  "name": "NESTFEST: GOT7",
-  "description": "Konser NESTFEST di Rajamangala National Stadium pada 9 Juli 2025.",
-  "image": "ipfs://bafkreiew25izjrotedxhzhy5tgkx2ouipzikumt5gqam6wdpiltpijong4", 
+  "name": "NIKI: Buzz World Tour",
+  "description": "Konser Buzz World Tour di London The O2 pada 9 Juli 2025.",
+  "image": "https://i.pinimg.com/736x/25/ad/39/25ad393ebb76cfbf53ab489cb3554f41.jpg", 
   "attributes": [
-    {
-        "trait_type": "Event ID",
-        "value": "1"
-    },
     {
       "trait_type": "Date",
       "value": "2025-07-09"
     },
     {
       "trait_type": "Location",
-      "value": "Rajamangala National Stadium"
+      "value": "London The O2"
     }
   ]
 }

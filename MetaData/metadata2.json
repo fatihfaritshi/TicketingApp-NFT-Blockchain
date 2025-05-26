@@ -1,0 +1,15 @@
+{
+  "name": "NESTFEST: GOT7",
+  "description": "Konser NESTFEST di Rajamangala National Stadium pada 9 Juli 2025.",
+  "image": "ipfs://bafkreiew25izjrotedxhzhy5tgkx2ouipzikumt5gqam6wdpiltpijong4", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-07-09"
+    },
+    {
+      "trait_type": "Location",
+      "value": "Rajamangala National Stadium"
+    }
+  ]
+}
