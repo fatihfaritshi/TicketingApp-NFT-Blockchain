@@ -1,0 +1,15 @@
+{
+  "name": "Daniel Caesar: Superpowers World Tour",
+  "description": "Konser Superpowers di Hollywood Bowl pada 21 September 2025.",
+  "image": "https://i.pinimg.com/736x/ae/3d/eb/ae3debaf07fae7835b89b57ed9dd9c5d.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-09-21"
+    },
+    {
+      "trait_type": "Location",
+      "value": "Hollywood Bowl"
+    }
+  ]
+}

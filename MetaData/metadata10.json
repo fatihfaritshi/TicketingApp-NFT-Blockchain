@@ -1,0 +1,15 @@
+{
+  "name": "SZA: S.O.S Tour",
+  "description": "Konser S.O.S di State Farm Stadium pada 13 Oktober 2025.",
+  "image": "https://i.pinimg.com/736x/bb/9a/c1/bb9ac1524b16a95c376a6669dd63eaca.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-10-13"
+    },
+    {
+      "trait_type": "Location",
+      "value": "State Farm Stadium"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Ariana Grande: Ethernal Sunshine Tour",
+  "description": "Konser Ethernal Sunshine di Wembley Stadium pada 16 Juli 2025.",
+  "image": "https://i.pinimg.com/736x/d7/6c/50/d76c50d43a6bd5a3623fe35bab1e2969.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-07-16"
+    },
+    {
+      "trait_type": "Location",
+      "value": "Wembley Stadium"
+    }
+  ]
+}

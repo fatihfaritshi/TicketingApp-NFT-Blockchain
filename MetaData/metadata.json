@@ -1,6 +1,6 @@
 {
   "name": "The Eras Tour",
-  "description": "Konser The Eras Tour di Jakarta Convention Center pada 21 Juli 2025.",
+  "description": "Konser The Eras Tour di Singapore National Stadium pada 21 Juli 2025.",
   "image": "https://i.pinimg.com/736x/fb/e9/19/fbe91944877dbb890f7b7194c5070b03.jpg", 
   "attributes": [
     {
@@ -9,7 +9,7 @@
     },
     {
       "trait_type": "Location",
-      "value": "Jakarta Convention Center"
+      "value": "Singapore National Stadium"
     }
   ]
 }

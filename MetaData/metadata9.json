@@ -1,0 +1,15 @@
+{
+  "name": "Gracie Abrams: The Secret of Us Tour",
+  "description": "Konser The Secret of Us di Motorpoint Arena Nottingham pada 25 Juni 2025.",
+  "image": "https://i.pinimg.com/736x/9f/56/80/9f568061421a03efc78a562224f9890a.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-06-25"
+    },
+    {
+      "trait_type": "Location",
+      "value": "Motorpoint Arena Nottingham"
+    }
+  ]
+}

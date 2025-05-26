@@ -1,11 +1,11 @@
 {
   "name": "NIKI: Buzz World Tour",
-  "description": "Konser Buzz World Tour di London The O2 pada 9 Juli 2025.",
+  "description": "Konser Buzz World Tour di London The O2 pada 20 Agustus 2025.",
   "image": "https://i.pinimg.com/736x/25/ad/39/25ad393ebb76cfbf53ab489cb3554f41.jpg", 
   "attributes": [
     {
       "trait_type": "Date",
-      "value": "2025-07-09"
+      "value": "2025-08-20"
     },
     {
       "trait_type": "Location",

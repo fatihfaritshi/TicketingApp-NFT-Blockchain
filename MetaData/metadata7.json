@@ -1,0 +1,15 @@
+{
+  "name": "Harry Styles: Love on Tour",
+  "description": "Konser Love on Tour di Arena Brimingham D2 pada 15 November 2025.",
+  "image": "https://i.pinimg.com/736x/b9/84/78/b984782ad2d642e5e081ffb565dfd778.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-11-15"
+    },
+    {
+      "trait_type": "Location",
+      "value": "Arena Birmingham"
+    }
+  ]
+}

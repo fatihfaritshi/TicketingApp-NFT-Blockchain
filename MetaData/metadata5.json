@@ -1,0 +1,15 @@
+{
+  "name": "NIKI: Nicole World Tour",
+  "description": "Konser Nicole di Jiexpo Hall D2 pada 23 September 2025.",
+  "image": "https://i.pinimg.com/736x/9e/4b/ca/9e4bca234ceff0f49e54f1f1324baa0c.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-09-23"
+    },
+    {
+      "trait_type": "Location",
+      "value": "JIexpo Hall D2"
+    }
+  ]
+}

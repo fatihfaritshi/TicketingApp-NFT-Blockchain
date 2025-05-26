@@ -1,0 +1,15 @@
+{
+  "name": "ZAYN: Stairway to The Sky Tour",
+  "description": "Konser Stairway to The Sky di London The O2 pada 27 September 2025.",
+  "image": "https://i.pinimg.com/736x/7d/6e/72/7d6e72e0e9a23833da24dbfbd5c32592.jpg", 
+  "attributes": [
+    {
+      "trait_type": "Date",
+      "value": "2025-09-27"
+    },
+    {
+      "trait_type": "Location",
+      "value": "London The O2"
+    }
+  ]
+}
